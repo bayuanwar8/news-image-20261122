@@ -773,6 +773,49 @@ function flame(x: number, y: number, r: number): void {
   fillCircle(x, y - r * 0.25, r * 0.62, rgb(255, 196, 66));
   fillCircle(x, y - r * 0.45, r * 0.3, rgb(255, 240, 180));
 }
+// Layered flame tongues (outer orange, mid yellow, pale core) for a burning scene.
+function flameTongues(x: number, y: number, s: number): void {
+  fillPoly(
+    [
+      [x - s * 0.55, y],
+      [x - s * 0.3, y - s * 0.7],
+      [x, y - s * 1.15],
+      [x + s * 0.28, y - s * 0.62],
+      [x + s * 0.55, y],
+    ],
+    rgb(255, 110, 20),
+  );
+  fillPoly(
+    [
+      [x - s * 0.34, y],
+      [x - s * 0.16, y - s * 0.5],
+      [x + s * 0.05, y - s * 0.85],
+      [x + s * 0.3, y - s * 0.45],
+      [x + s * 0.34, y],
+    ],
+    rgb(255, 190, 60),
+  );
+  fillPoly(
+    [
+      [x - s * 0.16, y],
+      [x - s * 0.06, y - s * 0.32],
+      [x + s * 0.08, y - s * 0.5],
+      [x + s * 0.16, y],
+    ],
+    rgb(255, 235, 170),
+  );
+}
+// Quadcopter drone: X arms, rotor-blur discs, body, red light.
+function quadcopter(cx: number, cy: number, s: number): void {
+  strokeLine(cx - s, cy - s * 0.5, cx + s, cy + s * 0.5, 1.4, rgb(30, 30, 34));
+  strokeLine(cx + s, cy - s * 0.5, cx - s, cy + s * 0.5, 1.4, rgb(30, 30, 34));
+  fillCircle(cx - s, cy - s * 0.5, s * 0.45, rgb(180, 185, 195));
+  fillCircle(cx + s, cy - s * 0.5, s * 0.45, rgb(180, 185, 195));
+  fillCircle(cx - s, cy + s * 0.5, s * 0.45, rgb(180, 185, 195));
+  fillCircle(cx + s, cy + s * 0.5, s * 0.45, rgb(180, 185, 195));
+  fillRect(cx - s * 0.4, cy - s * 0.28, s * 0.8, s * 0.56, rgb(30, 30, 34));
+  fillCircle(cx, cy + s * 0.3, 1.2, rgb(255, 60, 50));
+}
 function smoke(x: number, y: number, r: number, c: [number, number, number]): void {
   fillCircle(x, y, r, c);
   fillCircle(x + r * 0.7, y - r * 0.5, r * 0.8, c);
@@ -975,135 +1018,280 @@ function sceneCOP31(x: number, y: number, w: number, h: number): void {
   fillRect(x + w * 0.78, y + h * 0.94, w * 0.04, h * 0.04, rgb(220, 216, 206));
 }
 
-// Scene 2: Hormuz tankers — sea, two burning tankers, cliffs.
+// Scene 2: Hormuz tankers — cinematic strait at dusk: misty cliffs, low sun,
+// two burning supertankers in the middle distance, fire-lit water in front.
 function sceneHormuz(x: number, y: number, w: number, h: number): void {
-  sky(x, y, w, h, rgb(232, 150, 80), rgb(240, 200, 130));
-  fillCircle(x + w * 0.8, y + h * 0.16, h * 0.12, rgb(250, 220, 150)); // low sun
-  fillRect(x, y + h * 0.55, w, h * 0.45, rgb(28, 74, 96)); // sea
-  fillRect(x, y + h * 0.55, w, h * 0.03, rgb(120, 170, 200));
-  // Cliffs left and right.
+  // ---- Background: dusk sky, low sun with halo, thin clouds.
+  sky(x, y, w, h, rgb(198, 96, 40), rgb(250, 208, 145));
+  fillCircle(x + w * 0.8, y + h * 0.17, h * 0.16, rgb(248, 190, 110));
+  fillCircle(x + w * 0.8, y + h * 0.17, h * 0.12, rgb(250, 218, 145));
+  fillCircle(x + w * 0.8, y + h * 0.17, h * 0.09, rgb(255, 240, 198));
+  const cloud = (cx: number, cy: number, cw: number) => {
+    fillPoly(
+      [
+        [cx, cy],
+        [cx + cw * 0.3, cy - h * 0.02],
+        [cx + cw * 0.7, cy - h * 0.015],
+        [cx + cw, cy],
+        [cx + cw * 0.7, cy + h * 0.012],
+        [cx + cw * 0.3, cy + h * 0.015],
+      ],
+      rgb(246, 196, 138),
+    );
+    fillPoly(
+      [
+        [cx + cw * 0.1, cy + h * 0.008],
+        [cx + cw * 0.9, cy + h * 0.008],
+        [cx + cw * 0.8, cy + h * 0.02],
+        [cx + cw * 0.2, cy + h * 0.02],
+      ],
+      rgb(224, 148, 92),
+    );
+  };
+  cloud(x + w * 0.05, y + h * 0.1, w * 0.3);
+  cloud(x + w * 0.52, y + h * 0.3, w * 0.26);
+  cloud(x + w * 0.28, y + h * 0.42, w * 0.2);
+  // ---- Far cliffs in haze, then near cliffs with sunlit ridge + texture.
   fillPoly(
     [
       [x, y + h * 0.55],
-      [x + w * 0.16, y + h * 0.2],
-      [x + w * 0.2, y + h * 0.55],
+      [x + w * 0.13, y + h * 0.24],
+      [x + w * 0.24, y + h * 0.55],
     ],
-    rgb(120, 90, 70),
+    rgb(158, 128, 104),
   );
   fillPoly(
     [
       [x + w, y + h * 0.55],
-      [x + w * 0.86, y + h * 0.26],
-      [x + w * 0.82, y + h * 0.55],
+      [x + w * 0.88, y + h * 0.3],
+      [x + w * 0.8, y + h * 0.55],
     ],
-    rgb(120, 90, 70),
+    rgb(158, 128, 104),
   );
-  // Sun reflection column on the water (before the ships, so hulls occlude it).
-  for (let i = 0; i < 5; i++) fillRect(x + w * (0.76 + ((i * 7) % 3) * 0.01), y + h * (0.58 + i * 0.07), w * 0.07, h * 0.025, rgb(250, 200, 120));
-  // Tanker 1 (left, bow to the right, burning): hull with raked bow + flat stern,
-  // red boot-top stripe, white superstructure + funnel near the stern, mast,
-  // deck tanks, fire and smoke rising from a breach on deck.
+  fillRect(x, y + h * 0.5, w, h * 0.05, rgb(244, 202, 148)); // mist at the cliff bases
   fillPoly(
     [
-      [x + w * 0.07, y + h * 0.6],
-      [x + w * 0.385, y + h * 0.6],
-      [x + w * 0.44, y + h * 0.72],
-      [x + w * 0.07, y + h * 0.72],
+      [x, y + h * 0.55],
+      [x + w * 0.1, y + h * 0.18],
+      [x + w * 0.17, y + h * 0.55],
     ],
-    rgb(52, 52, 58),
+    rgb(104, 74, 56),
   );
+  strokeLine(x + w * 0.1, y + h * 0.18, x + w * 0.17, y + h * 0.55, 1.4, rgb(232, 170, 110));
+  strokeLine(x + w * 0.04, y + h * 0.34, x + w * 0.09, y + h * 0.3, 1.2, rgb(82, 58, 44));
+  strokeLine(x + w * 0.06, y + h * 0.44, x + w * 0.11, y + h * 0.4, 1.2, rgb(82, 58, 44));
+  strokeLine(x + w * 0.03, y + h * 0.48, x + w * 0.07, y + h * 0.46, 1.2, rgb(140, 105, 80));
   fillPoly(
     [
-      [x + w * 0.07, y + h * 0.68],
-      [x + w * 0.415, y + h * 0.68],
-      [x + w * 0.44, y + h * 0.72],
-      [x + w * 0.07, y + h * 0.72],
+      [x + w, y + h * 0.55],
+      [x + w * 0.9, y + h * 0.24],
+      [x + w * 0.84, y + h * 0.55],
     ],
-    rgb(140, 40, 34),
+    rgb(104, 74, 56),
   );
-  fillRect(x + w * 0.07, y + h * 0.585, w * 0.315, h * 0.015, rgb(180, 180, 186)); // deck edge
-  fillRect(x + w * 0.085, y + h * 0.5, w * 0.075, h * 0.1, rgb(235, 232, 224)); // superstructure
-  fillRect(x + w * 0.095, y + h * 0.525, w * 0.012, h * 0.02, rgb(40, 44, 52));
-  fillRect(x + w * 0.115, y + h * 0.525, w * 0.012, h * 0.02, rgb(40, 44, 52));
-  fillRect(x + w * 0.135, y + h * 0.525, w * 0.012, h * 0.02, rgb(40, 44, 52));
-  fillRect(x + w * 0.095, y + h * 0.555, w * 0.012, h * 0.02, rgb(40, 44, 52));
-  fillRect(x + w * 0.115, y + h * 0.555, w * 0.012, h * 0.02, rgb(40, 44, 52));
-  fillRect(x + w * 0.135, y + h * 0.555, w * 0.012, h * 0.02, rgb(40, 44, 52));
-  fillRect(x + w * 0.165, y + h * 0.455, w * 0.035, h * 0.145, rgb(70, 70, 76)); // funnel
-  fillRect(x + w * 0.165, y + h * 0.455, w * 0.035, h * 0.03, rgb(30, 30, 34)); // funnel top
-  strokeLine(x + w * 0.36, y + h * 0.6, x + w * 0.36, y + h * 0.47, 1.6, rgb(40, 40, 44)); // mast
-  strokeLine(x + w * 0.345, y + h * 0.48, x + w * 0.375, y + h * 0.48, 1.6, rgb(40, 40, 44));
-  fillCircle(x + w * 0.205, y + h * 0.585, h * 0.018, rgb(150, 150, 156)); // deck tanks
-  fillCircle(x + w * 0.3, y + h * 0.585, h * 0.018, rgb(150, 150, 156));
-  fillCircle(x + w * 0.335, y + h * 0.585, h * 0.018, rgb(150, 150, 156));
-  flame(x + w * 0.245, y + h * 0.575, h * 0.085);
-  smoke(x + w * 0.26, y + h * 0.38, h * 0.085, rgb(70, 70, 74));
+  strokeLine(x + w * 0.9, y + h * 0.24, x + w * 0.84, y + h * 0.55, 1.4, rgb(232, 170, 110));
+  strokeLine(x + w * 0.93, y + h * 0.36, x + w * 0.89, y + h * 0.32, 1.2, rgb(82, 58, 44));
+  strokeLine(x + w * 0.95, y + h * 0.46, x + w * 0.91, y + h * 0.42, 1.2, rgb(82, 58, 44));
+  // ---- Sea: dark teal gradient, deep at the bottom, horizon sheen.
+  for (let i = 0; i < 8; i++) {
+    const t = i / 7;
+    fillRect(x, y + h * (0.55 + (0.45 * i) / 8), w, (h * 0.45) / 8 + 0.6, [
+      Math.round(36 - 22 * t),
+      Math.round(88 - 52 * t),
+      Math.round(108 - 62 * t),
+    ]);
+  }
+  fillRect(x, y + h * 0.55, w, h * 0.02, rgb(150, 190, 205));
+  // Sun reflection column (before the ships, so hulls occlude it).
+  for (let i = 0; i < 6; i++)
+    fillRect(x + w * (0.765 + ((i * 7) % 3) * 0.008), y + h * (0.57 + i * 0.065), w * (0.06 - i * 0.004), h * 0.022, rgb(250, 198, 115));
+  // Distant escort ship in the haze + wake.
   fillPoly(
     [
-      [x + w * 0.43, y + h * 0.7],
-      [x + w * 0.47, y + h * 0.72],
-      [x + w * 0.43, y + h * 0.735],
+      [x + w * 0.44, y + h * 0.52],
+      [x + w * 0.56, y + h * 0.52],
+      [x + w * 0.54, y + h * 0.545],
+      [x + w * 0.44, y + h * 0.545],
     ],
-    rgb(220, 230, 235),
-  ); // bow wave
-  fillRect(x + w * 0.12, y + h * 0.74, w * 0.22, h * 0.045, rgb(255, 140, 40)); // fire glow
-  // Tanker 2 (right, bow to the left, burning): mirror of tanker 1, slightly lower.
-  fillPoly(
-    [
-      [x + w * 0.93, y + h * 0.64],
-      [x + w * 0.615, y + h * 0.64],
-      [x + w * 0.56, y + h * 0.76],
-      [x + w * 0.93, y + h * 0.76],
-    ],
-    rgb(46, 46, 52),
+    rgb(40, 62, 78),
   );
-  fillPoly(
-    [
-      [x + w * 0.93, y + h * 0.72],
-      [x + w * 0.585, y + h * 0.72],
-      [x + w * 0.56, y + h * 0.76],
-      [x + w * 0.93, y + h * 0.76],
-    ],
-    rgb(140, 40, 34),
-  );
-  fillRect(x + w * 0.6, y + h * 0.625, w * 0.33, h * 0.015, rgb(180, 180, 186)); // deck edge
-  fillRect(x + w * 0.845, y + h * 0.54, w * 0.075, h * 0.1, rgb(235, 232, 224)); // superstructure
-  fillRect(x + w * 0.855, y + h * 0.565, w * 0.012, h * 0.02, rgb(40, 44, 52));
-  fillRect(x + w * 0.875, y + h * 0.565, w * 0.012, h * 0.02, rgb(40, 44, 52));
-  fillRect(x + w * 0.895, y + h * 0.565, w * 0.012, h * 0.02, rgb(40, 44, 52));
-  fillRect(x + w * 0.855, y + h * 0.595, w * 0.012, h * 0.02, rgb(40, 44, 52));
-  fillRect(x + w * 0.875, y + h * 0.595, w * 0.012, h * 0.02, rgb(40, 44, 52));
-  fillRect(x + w * 0.895, y + h * 0.595, w * 0.012, h * 0.02, rgb(40, 44, 52));
-  fillRect(x + w * 0.805, y + h * 0.495, w * 0.035, h * 0.145, rgb(70, 70, 76)); // funnel
-  fillRect(x + w * 0.805, y + h * 0.495, w * 0.035, h * 0.03, rgb(30, 30, 34)); // funnel top
-  strokeLine(x + w * 0.635, y + h * 0.64, x + w * 0.635, y + h * 0.51, 1.6, rgb(40, 40, 44)); // mast
-  strokeLine(x + w * 0.62, y + h * 0.52, x + w * 0.65, y + h * 0.52, 1.6, rgb(40, 40, 44));
-  fillCircle(x + w * 0.66, y + h * 0.625, h * 0.018, rgb(150, 150, 156)); // deck tanks
-  fillCircle(x + w * 0.755, y + h * 0.625, h * 0.018, rgb(150, 150, 156));
-  fillCircle(x + w * 0.79, y + h * 0.625, h * 0.018, rgb(150, 150, 156));
-  flame(x + w * 0.705, y + h * 0.615, h * 0.08);
-  smoke(x + w * 0.72, y + h * 0.43, h * 0.08, rgb(70, 70, 74));
-  fillPoly(
-    [
-      [x + w * 0.57, y + h * 0.745],
-      [x + w * 0.53, y + h * 0.76],
-      [x + w * 0.57, y + h * 0.775],
-    ],
-    rgb(220, 230, 235),
-  ); // bow wave
-  fillRect(x + w * 0.6, y + h * 0.78, w * 0.2, h * 0.045, rgb(255, 140, 40)); // fire glow
-  // Wave lines.
+  fillRect(x + w * 0.485, y + h * 0.49, w * 0.03, h * 0.03, rgb(40, 62, 78));
+  strokeLine(x + w * 0.5, y + h * 0.49, x + w * 0.5, y + h * 0.44, 1.2, rgb(40, 62, 78));
+  fillCircle(x + w * 0.5, y + h * 0.435, 1.2, rgb(255, 200, 120));
+  strokeLine(x + w * 0.42, y + h * 0.55, x + w * 0.58, y + h * 0.55, 1.2, rgb(140, 175, 195));
+  // ---- Flame tongues + layered smoke helpers.
+  const tongues = (cx: number, cy: number, s: number) => {
+    fillPoly(
+      [
+        [cx - s * 0.55, cy],
+        [cx - s * 0.3, cy - s * 0.7],
+        [cx, cy - s * 1.15],
+        [cx + s * 0.28, cy - s * 0.62],
+        [cx + s * 0.55, cy],
+      ],
+      rgb(255, 110, 20),
+    );
+    fillPoly(
+      [
+        [cx - s * 0.34, cy],
+        [cx - s * 0.16, cy - s * 0.5],
+        [cx + s * 0.05, cy - s * 0.85],
+        [cx + s * 0.3, cy - s * 0.45],
+        [cx + s * 0.34, cy],
+      ],
+      rgb(255, 190, 60),
+    );
+    fillPoly(
+      [
+        [cx - s * 0.16, cy],
+        [cx - s * 0.06, cy - s * 0.32],
+        [cx + s * 0.08, cy - s * 0.5],
+        [cx + s * 0.16, cy],
+      ],
+      rgb(255, 235, 170),
+    );
+    // Embers rising.
+    fillCircle(cx - s * 0.4, cy - s * 1.25, 1.8, rgb(255, 160, 60));
+    fillCircle(cx + s * 0.35, cy - s * 1.05, 1.5, rgb(255, 190, 80));
+    fillCircle(cx + s * 0.1, cy - s * 1.4, 1.4, rgb(255, 140, 40));
+    fillCircle(cx - s * 0.15, cy - s * 1.55, 1.2, rgb(255, 200, 100));
+  };
+  const smokeStack = (cx: number, cy: number, s: number) => {
+    fillCircle(cx, cy, s, rgb(58, 58, 62));
+    fillCircle(cx + s * 0.65, cy - s * 0.45, s * 0.78, rgb(58, 58, 62));
+    fillCircle(cx - s * 0.65, cy - s * 0.4, s * 0.72, rgb(58, 58, 62));
+    fillCircle(cx + s * 0.2, cy - s * 0.7, s * 0.6, rgb(82, 82, 86));
+    fillCircle(cx - s * 0.3, cy - s * 0.85, s * 0.5, rgb(104, 104, 108));
+    fillCircle(cx, cy - s * 0.15, s * 0.5, rgb(52, 52, 56)); // dark core
+  };
+  // ---- One supertanker, drawn twice (mirrored, second one lower).
+  const tanker = (mirror: boolean, dy: number) => {
+    const X = (f: number) => x + w * (mirror ? 1 - f : f);
+    const XR = (f: number, fw: number) => x + w * (mirror ? 1 - f - fw : f);
+    const Y = (f: number) => y + h * (f + dy);
+    // Hull with raked bow + flat stern; red boot-top; deck edge.
+    fillPoly(
+      [
+        [X(0.07), Y(0.6)],
+        [X(0.385), Y(0.6)],
+        [X(0.44), Y(0.72)],
+        [X(0.07), Y(0.72)],
+      ],
+      rgb(52, 52, 58),
+    );
+    fillPoly(
+      [
+        [X(0.07), Y(0.68)],
+        [X(0.415), Y(0.68)],
+        [X(0.44), Y(0.72)],
+        [X(0.07), Y(0.72)],
+      ],
+      rgb(140, 40, 34),
+    );
+    // Hull plating: weld lines + plate seams.
+    strokeLine(X(0.07), Y(0.64), X(0.405), Y(0.64), 1, rgb(30, 30, 34));
+    strokeLine(X(0.14), Y(0.6), X(0.14), Y(0.68), 1, rgb(30, 30, 34));
+    strokeLine(X(0.26), Y(0.6), X(0.26), Y(0.68), 1, rgb(30, 30, 34));
+    // Draft marks + anchor + name plate near the bow.
+    strokeLine(X(0.405), Y(0.63), X(0.425), Y(0.63), 1.2, rgb(220, 220, 225));
+    strokeLine(X(0.4), Y(0.66), X(0.42), Y(0.66), 1.2, rgb(220, 220, 225));
+    strokeLine(X(0.4), Y(0.69), X(0.418), Y(0.69), 1.2, rgb(220, 220, 225));
+    fillCircle(X(0.395), Y(0.615), 1.6, rgb(30, 30, 34));
+    fillRect(XR(0.37, 0.03), Y(0.605), w * 0.03, h * 0.012, rgb(220, 220, 225));
+    strokeLine(X(0.378), Y(0.608), X(0.386), Y(0.608), 1, rgb(40, 40, 44));
+    strokeLine(X(0.39), Y(0.608), X(0.396), Y(0.608), 1, rgb(40, 40, 44));
+    // Shadow under the hull at the waterline.
+    fillRect(XR(0.07, 0.37), Y(0.72), w * 0.37, h * 0.018, rgb(16, 40, 52));
+    // Deck edge + railing posts.
+    fillRect(XR(0.07, 0.315), Y(0.585), w * 0.315, h * 0.015, rgb(180, 180, 186));
+    for (let i = 0; i < 6; i++) strokeLine(X(0.1 + i * 0.045), Y(0.585), X(0.1 + i * 0.045), Y(0.565), 1, rgb(120, 120, 126));
+    // Superstructure with bridge wings, 2 window rows, radar on the roof.
+    fillRect(XR(0.085, 0.075), Y(0.5), w * 0.075, h * 0.1, rgb(235, 232, 224));
+    fillRect(XR(0.075, 0.012), Y(0.52), w * 0.012, h * 0.03, rgb(235, 232, 224)); // bridge wing
+    fillRect(XR(0.148, 0.012), Y(0.52), w * 0.012, h * 0.03, rgb(235, 232, 224));
+    for (let r = 0; r < 2; r++)
+      for (let c = 0; c < 3; c++) fillRect(XR(0.095 + c * 0.02, 0.012), Y(0.525 + r * 0.03), w * 0.012, h * 0.02, rgb(40, 44, 52));
+    strokeLine(X(0.122), Y(0.5), X(0.122), Y(0.465), 1.2, rgb(60, 60, 66)); // radar mast
+    strokeLine(X(0.11), Y(0.47), X(0.134), Y(0.47), 1.2, rgb(60, 60, 66));
+    fillCircle(X(0.122), Y(0.462), 1.2, rgb(255, 220, 120));
+    fillCircle(X(0.075), Y(0.52), 1.2, rgb(255, 60, 50)); // wing nav light
+    fillRect(XR(0.085, 0.075), Y(0.6), w * 0.075, h * 0.008, rgb(90, 90, 96)); // shadow at its base
+    // Funnel with orange band + white mark.
+    fillRect(XR(0.165, 0.035), Y(0.455), w * 0.035, h * 0.145, rgb(70, 70, 76));
+    fillRect(XR(0.165, 0.035), Y(0.455), w * 0.035, h * 0.03, rgb(30, 30, 34));
+    fillRect(XR(0.165, 0.035), Y(0.5), w * 0.035, h * 0.02, rgb(230, 120, 40));
+    fillCircle(X(0.1825), Y(0.53), 1.4, rgb(235, 232, 224));
+    // Mast with rigging + nav light.
+    strokeLine(X(0.36), Y(0.6), X(0.36), Y(0.47), 1.6, rgb(40, 40, 44));
+    strokeLine(X(0.345), Y(0.48), X(0.375), Y(0.48), 1.6, rgb(40, 40, 44));
+    strokeLine(X(0.36), Y(0.47), X(0.435), Y(0.6), 1, rgb(90, 90, 96)); // rigging to bow
+    strokeLine(X(0.36), Y(0.47), X(0.2), Y(0.585), 1, rgb(90, 90, 96)); // rigging to stern
+    fillCircle(X(0.36), Y(0.465), 1.3, rgb(255, 60, 50));
+    // Deck tanks with shading + connecting pipe; cargo hatches; vents.
+    const tank = (tx: number) => {
+      fillCircle(X(tx), Y(0.585), h * 0.02, rgb(140, 140, 146));
+      fillCircle(X(tx) - 1, Y(0.585) - 1, h * 0.011, rgb(185, 185, 190));
+      fillRect(X(tx) - w * 0.008, Y(0.585), w * 0.016, h * 0.012, rgb(110, 110, 116));
+    };
+    tank(0.205);
+    tank(0.3);
+    tank(0.335);
+    strokeLine(X(0.205), Y(0.585), X(0.335), Y(0.585), 1.2, rgb(120, 120, 126));
+    fillRect(XR(0.225, 0.035), Y(0.575), w * 0.035, h * 0.012, rgb(96, 96, 102)); // hatch
+    fillRect(XR(0.315, 0.03), Y(0.575), w * 0.03, h * 0.012, rgb(96, 96, 102));
+    strokeLine(X(0.24), Y(0.585), X(0.24), Y(0.56), 1.2, rgb(110, 110, 116)); // vent
+    strokeLine(X(0.24), Y(0.56), X(0.252), Y(0.56), 1.2, rgb(110, 110, 116));
+    // Lifeboat on davits beside the superstructure.
+    strokeLine(X(0.075), Y(0.52), X(0.07), Y(0.5), 1.2, rgb(90, 90, 96));
+    strokeLine(X(0.095), Y(0.52), X(0.09), Y(0.5), 1.2, rgb(90, 90, 96));
+    fillRect(XR(0.062, 0.035), Y(0.5), w * 0.035, h * 0.02, rgb(230, 120, 40));
+    fillCircle(X(0.062), Y(0.51), h * 0.01, rgb(230, 120, 40));
+    fillCircle(X(0.097), Y(0.51), h * 0.01, rgb(230, 120, 40));
+    // Fire + smoke rooted on the deck breach; warm glow on the hull.
+    tongues(X(0.245), Y(0.585), h * 0.105);
+    tongues(X(0.295), Y(0.585), h * 0.06);
+    smokeStack(X(0.26), Y(0.38), h * 0.085);
+    fillRect(XR(0.2, 0.09), Y(0.6), w * 0.09, h * 0.02, rgb(200, 90, 30)); // glow on hull
+    fillRect(XR(0.148, 0.012), Y(0.5), w * 0.012, h * 0.1, rgb(230, 130, 50)); // glow on superstructure edge, fire side
+    // Bow wave + foam at the waterline.
+    fillPoly(
+      [
+        [X(0.43), Y(0.7)],
+        [X(0.47), Y(0.72)],
+        [X(0.43), Y(0.735)],
+      ],
+      rgb(220, 230, 235),
+    );
+    fillCircle(X(0.455), Y(0.745), 1.4, rgb(230, 238, 242));
+    fillCircle(X(0.44), Y(0.755), 1.1, rgb(230, 238, 242));
+    for (let i = 0; i < 4; i++) fillCircle(X(0.1 + i * 0.08), Y(0.735), 1.1, rgb(200, 220, 230));
+  };
+  tanker(false, 0);
+  tanker(true, 0.04);
+  // ---- Foreground: fire reflections, foam lines, wave texture.
+  const fireRefl = (fx: number, fy: number) => {
+    fillRect(x + w * (fx - 0.05), y + h * (fy + 0.02), w * 0.1, h * 0.02, rgb(255, 150, 50));
+    fillRect(x + w * (fx - 0.035), y + h * (fy + 0.055), w * 0.07, h * 0.018, rgb(230, 110, 35));
+    fillRect(x + w * (fx - 0.02), y + h * (fy + 0.09), w * 0.04, h * 0.016, rgb(200, 90, 30));
+    fillRect(x + w * (fx - 0.012), y + h * (fy + 0.125), w * 0.024, h * 0.014, rgb(170, 70, 28));
+  };
+  fireRefl(0.245, 0.74);
+  fireRefl(0.755, 0.78);
   strokeLine(x + w * 0.3, y + h * 0.8, x + w * 0.42, y + h * 0.8, 1.2, rgb(150, 190, 210));
   strokeLine(x + w * 0.48, y + h * 0.86, x + w * 0.58, y + h * 0.86, 1.2, rgb(150, 190, 210));
   strokeLine(x + w * 0.12, y + h * 0.9, x + w * 0.24, y + h * 0.9, 1.2, rgb(150, 190, 210));
-  // Distant escort ship silhouette.
-  fillRect(x + w * 0.44, y + h * 0.5, w * 0.12, h * 0.05, rgb(30, 40, 52));
-  strokeLine(x + w * 0.5, y + h * 0.5, x + w * 0.5, y + h * 0.42, 1.4, rgb(30, 40, 52));
+  strokeLine(x + w * 0.62, y + h * 0.93, x + w * 0.74, y + h * 0.93, 1.2, rgb(120, 160, 190));
+  strokeLine(x + w * 0.05, y + h * 0.97, x + w * 0.2, y + h * 0.97, 1.2, rgb(100, 140, 170));
+  fillCircle(x + w * 0.5, y + h * 0.9, 1.2, rgb(200, 220, 230));
+  fillCircle(x + w * 0.85, y + h * 0.88, 1.2, rgb(200, 220, 230));
+  fillCircle(x + w * 0.33, y + h * 0.95, 1.1, rgb(190, 210, 222));
   // Birds.
   strokeLine(x + w * 0.3, y + h * 0.14, x + w * 0.33, y + h * 0.12, 1.2, rgb(60, 50, 44));
   strokeLine(x + w * 0.33, y + h * 0.12, x + w * 0.36, y + h * 0.14, 1.2, rgb(60, 50, 44));
   strokeLine(x + w * 0.62, y + h * 0.1, x + w * 0.65, y + h * 0.08, 1.2, rgb(60, 50, 44));
   strokeLine(x + w * 0.65, y + h * 0.08, x + w * 0.68, y + h * 0.1, 1.2, rgb(60, 50, 44));
+  strokeLine(x + w * 0.42, y + h * 0.06, x + w * 0.44, y + h * 0.045, 1.1, rgb(60, 50, 44));
+  strokeLine(x + w * 0.44, y + h * 0.045, x + w * 0.46, y + h * 0.06, 1.1, rgb(60, 50, 44));
 }
 
 // Scene 3: Vegas GP — night race, neon skyline, two F1 cars.
@@ -1216,44 +1404,75 @@ function sceneBahrain(x: number, y: number, w: number, h: number): void {
   fillRect(x, y + h * 0.82, w, h * 0.18, rgb(24, 26, 36));
 }
 
-// Scene 6: Riyadh intercepts — sky, interceptor arcs meeting a burst, skyline.
+// Scene 6: Riyadh intercepts — dusk sky, layered skyline, interceptor arcs meeting a burst.
 function sceneRiyadh(x: number, y: number, w: number, h: number): void {
-  sky(x, y, w, h, rgb(40, 80, 120), rgb(150, 190, 220));
-  // Skyline.
-  fillRect(x + w * 0.04, y + h * 0.6, w * 0.12, h * 0.24, rgb(90, 100, 116));
-  fillRect(x + w * 0.2, y + h * 0.5, w * 0.1, h * 0.34, rgb(90, 100, 116));
-  fillRect(x + w * 0.34, y + h * 0.66, w * 0.16, h * 0.18, rgb(90, 100, 116));
-  fillRect(x + w * 0.56, y + h * 0.55, w * 0.12, h * 0.29, rgb(90, 100, 116));
-  fillRect(x + w * 0.74, y + h * 0.62, w * 0.2, h * 0.22, rgb(90, 100, 116));
-  // Lit windows in the skyline + crescent moon + searchlights.
-  for (let i = 0; i < 8; i++) fillRect(x + w * (0.06 + ((i * 37) % 80) / 100), y + h * (0.56 + ((i * 23) % 20) / 100), w * 0.02, h * 0.03, rgb(255, 220, 130));
+  sky(x, y, w, h, rgb(30, 44, 80), rgb(226, 156, 92));
+  // Far skyline in haze.
+  fillRect(x + w * 0.1, y + h * 0.62, w * 0.1, h * 0.22, rgb(112, 102, 126));
+  fillRect(x + w * 0.44, y + h * 0.58, w * 0.12, h * 0.26, rgb(112, 102, 126));
+  fillRect(x + w * 0.68, y + h * 0.64, w * 0.1, h * 0.2, rgb(112, 102, 126));
+  // Near skyline.
+  fillRect(x + w * 0.04, y + h * 0.6, w * 0.12, h * 0.24, rgb(58, 60, 76));
+  fillRect(x + w * 0.2, y + h * 0.5, w * 0.1, h * 0.34, rgb(58, 60, 76));
+  fillRect(x + w * 0.34, y + h * 0.66, w * 0.16, h * 0.18, rgb(58, 60, 76));
+  fillRect(x + w * 0.56, y + h * 0.55, w * 0.12, h * 0.29, rgb(58, 60, 76));
+  fillRect(x + w * 0.74, y + h * 0.62, w * 0.2, h * 0.22, rgb(58, 60, 76));
+  // Kingdom Centre tower with its lit arch opening (tall, centre-right).
+  fillRect(x + w * 0.6, y + h * 0.28, w * 0.07, h * 0.56, rgb(58, 60, 76));
+  fillPoly(
+    [
+      [x + w * 0.62, y + h * 0.28],
+      [x + w * 0.635, y + h * 0.4],
+      [x + w * 0.65, y + h * 0.28],
+    ],
+    rgb(255, 190, 100),
+  );
+  // Lit windows in the near skyline.
+  for (let i = 0; i < 10; i++) fillRect(x + w * (0.06 + ((i * 37) % 80) / 100), y + h * (0.56 + ((i * 23) % 20) / 100), w * 0.02, h * 0.03, rgb(255, 220, 130));
+  // Crescent moon with halo.
+  fillCircle(x + w * 0.86, y + h * 0.12, h * 0.09, rgb(240, 220, 170));
   fillCircle(x + w * 0.86, y + h * 0.12, h * 0.05, rgb(240, 230, 190));
-  fillCircle(x + w * 0.875, y + h * 0.115, h * 0.045, rgb(40, 80, 120));
-  strokeLine(x + w * 0.24, y + h * 0.84, x + w * 0.4, y + h * 0.4, 1.4, rgb(220, 230, 240));
-  strokeLine(x + w * 0.72, y + h * 0.84, x + w * 0.58, y + h * 0.42, 1.4, rgb(220, 230, 240));
+  fillCircle(x + w * 0.875, y + h * 0.115, h * 0.045, rgb(53, 57, 81));
+  // Searchlight beams with bright cores.
+  strokeLine(x + w * 0.24, y + h * 0.84, x + w * 0.4, y + h * 0.4, 2.6, rgb(200, 210, 225));
+  strokeLine(x + w * 0.24, y + h * 0.84, x + w * 0.4, y + h * 0.4, 1.2, rgb(240, 244, 250));
+  strokeLine(x + w * 0.72, y + h * 0.84, x + w * 0.58, y + h * 0.42, 2.6, rgb(200, 210, 225));
+  strokeLine(x + w * 0.72, y + h * 0.84, x + w * 0.58, y + h * 0.42, 1.2, rgb(240, 244, 250));
   // Interceptor arcs: smooth curves drawn as short segments.
-  const arc = (x0: number, y0: number, x1: number, y1: number, cx: number, cy: number) => {
+  const arc = (x0: number, y0: number, x1: number, y1: number, cx: number, cy: number, wd: number, c: [number, number, number]) => {
     let px = x0;
     let py = y0;
     for (let t = 0.1; t <= 1.001; t += 0.1) {
       const qx = (1 - t) * (1 - t) * x0 + 2 * (1 - t) * t * cx + t * t * x1;
       const qy = (1 - t) * (1 - t) * y0 + 2 * (1 - t) * t * cy + t * t * y1;
-      strokeLine(px, py, qx, qy, 1.8, rgb(255, 230, 140));
+      strokeLine(px, py, qx, qy, wd, c);
       px = qx;
       py = qy;
     }
   };
-  arc(x + w * 0.1, y + h * 0.78, x + w * 0.52, y + h * 0.3, x + w * 0.22, y + h * 0.3);
-  arc(x + w * 0.92, y + h * 0.8, x + w * 0.52, y + h * 0.3, x + w * 0.82, y + h * 0.34);
-  arc(x + w * 0.5, y + h * 0.84, x + w * 0.52, y + h * 0.3, x + w * 0.5, y + h * 0.5);
-  // Intercept burst.
+  // Faint echo arcs for motion, just behind the bright ones.
+  arc(x + w * 0.1, y + h * 0.82, x + w * 0.52, y + h * 0.34, x + w * 0.22, y + h * 0.34, 1, rgb(255, 220, 130));
+  arc(x + w * 0.92, y + h * 0.84, x + w * 0.52, y + h * 0.34, x + w * 0.82, y + h * 0.38, 1, rgb(255, 220, 130));
+  arc(x + w * 0.1, y + h * 0.78, x + w * 0.52, y + h * 0.3, x + w * 0.22, y + h * 0.3, 1.8, rgb(255, 230, 140));
+  arc(x + w * 0.92, y + h * 0.8, x + w * 0.52, y + h * 0.3, x + w * 0.82, y + h * 0.34, 1.8, rgb(255, 230, 140));
+  arc(x + w * 0.5, y + h * 0.84, x + w * 0.52, y + h * 0.3, x + w * 0.5, y + h * 0.5, 1.8, rgb(255, 230, 140));
+  // Intercept burst: layered glow + sparks + falling debris + smoke.
+  fillCircle(x + w * 0.52, y + h * 0.3, h * 0.17, rgb(255, 170, 50));
   fillCircle(x + w * 0.52, y + h * 0.3, h * 0.12, rgb(255, 190, 60));
   fillCircle(x + w * 0.52, y + h * 0.3, h * 0.06, rgb(255, 240, 190));
-  for (let i = 0; i < 8; i++) {
-    const a = (i / 8) * Math.PI * 2;
-    strokeLine(x + w * 0.52, y + h * 0.3, x + w * 0.52 + Math.cos(a) * w * 0.12, y + h * 0.3 + Math.sin(a) * h * 0.16, 1.4, rgb(255, 200, 80));
+  for (let i = 0; i < 12; i++) {
+    const a = (i / 12) * Math.PI * 2;
+    const len = 0.1 + ((i * 7) % 5) * 0.015;
+    strokeLine(x + w * 0.52, y + h * 0.3, x + w * 0.52 + Math.cos(a) * w * len, y + h * 0.3 + Math.sin(a) * h * (len * 1.4), 1.4, rgb(255, 200, 80));
   }
-  fillRect(x, y + h * 0.84, w, h * 0.16, rgb(52, 58, 68));
+  fillCircle(x + w * 0.52, y + h * 0.16, h * 0.05, rgb(90, 80, 90)); // smoke puff above the burst
+  fillCircle(x + w * 0.48, y + h * 0.44, 1.4, rgb(255, 200, 90)); // falling debris
+  fillCircle(x + w * 0.56, y + h * 0.48, 1.2, rgb(255, 180, 70));
+  fillCircle(x + w * 0.53, y + h * 0.54, 1, rgb(230, 150, 60));
+  // Ground band with city lights.
+  fillRect(x, y + h * 0.84, w, h * 0.16, rgb(40, 44, 56));
+  for (let i = 0; i < 8; i++) fillCircle(x + w * (0.05 + i * 0.12), y + h * 0.88, 1.2, rgb(255, 210, 110));
+  strokeLine(x + w * 0.05, y + h * 0.94, x + w * 0.95, y + h * 0.94, 1, rgb(255, 200, 120));
 }
 
 // Scene 7: Sinaloa capture — mountains, helicopter, house, soldiers.
@@ -1362,15 +1581,31 @@ function sceneKyiv(x: number, y: number, w: number, h: number): void {
   fillRect(x, y + h * 0.82, w, h * 0.18, rgb(28, 30, 40));
 }
 
-// Scene 9: Benghazi ship — harbour, warship, drone, explosion.
+// Scene 9: Benghazi ship — dawn harbour, warship, drone, explosion.
 function sceneBenghazi(x: number, y: number, w: number, h: number): void {
-  sky(x, y, w, h, rgb(14, 22, 44), rgb(60, 80, 110));
+  sky(x, y, w, h, rgb(16, 24, 48), rgb(190, 110, 100));
   for (let i = 0; i < 10; i++) fillCircle(x + w * ((i * 41) % 100) / 100, y + h * ((i * 23) % 30) / 100, 1, WHITE);
-  fillRect(x, y + h * 0.6, w, h * 0.4, rgb(22, 52, 76)); // harbour water
-  // Pier.
+  // Dawn band + moon with halo.
+  fillRect(x, y + h * 0.52, w, h * 0.08, rgb(205, 130, 105));
+  fillCircle(x + w * 0.88, y + h * 0.12, h * 0.09, rgb(230, 225, 200));
+  fillCircle(x + w * 0.88, y + h * 0.12, h * 0.05, rgb(235, 230, 210));
+  // Harbour water: dark gradient + moon path.
+  for (let i = 0; i < 5; i++) {
+    const t = i / 4;
+    fillRect(x, y + h * (0.6 + (0.4 * i) / 5), w, (h * 0.4) / 5 + 0.6, [Math.round(22 - 10 * t), Math.round(52 - 26 * t), Math.round(76 - 38 * t)]);
+  }
+  for (let i = 0; i < 4; i++) fillRect(x + w * (0.865 + ((i * 5) % 2) * 0.008), y + h * (0.64 + i * 0.08), w * 0.03, h * 0.02, rgb(220, 215, 190));
+  // Pier with bollards, crates, crane.
   fillRect(x, y + h * 0.58, w * 0.3, h * 0.06, rgb(90, 88, 84));
-  // Warship.
+  for (let i = 0; i < 3; i++) fillRect(x + w * (0.04 + i * 0.09), y + h * 0.555, w * 0.02, h * 0.025, rgb(60, 58, 54));
+  fillRect(x + w * 0.1, y + h * 0.52, w * 0.04, h * 0.06, rgb(120, 110, 95)); // crate
+  fillRect(x + w * 0.15, y + h * 0.54, w * 0.03, h * 0.04, rgb(100, 92, 80));
+  strokeLine(x + w * 0.24, y + h * 0.58, x + w * 0.24, y + h * 0.38, 1.6, rgb(70, 68, 64)); // crane mast
+  strokeLine(x + w * 0.24, y + h * 0.38, x + w * 0.3, y + h * 0.44, 1.4, rgb(70, 68, 64)); // crane jib
+  strokeLine(x + w * 0.3, y + h * 0.44, x + w * 0.3, y + h * 0.5, 1, rgb(70, 68, 64)); // hook line
+  // Warship with turret, bridge windows, radar, pennant.
   fillRect(x + w * 0.3, y + h * 0.62, w * 0.5, h * 0.1, rgb(70, 76, 84));
+  strokeLine(x + w * 0.32, y + h * 0.67, x + w * 0.78, y + h * 0.67, 1, rgb(48, 52, 60)); // hull plating line
   fillPoly(
     [
       [x + w * 0.8, y + h * 0.62],
@@ -1379,22 +1614,46 @@ function sceneBenghazi(x: number, y: number, w: number, h: number): void {
     ],
     rgb(70, 76, 84),
   );
-  fillRect(x + w * 0.42, y + h * 0.52, w * 0.14, h * 0.1, rgb(84, 90, 98));
+  fillRect(x + w * 0.36, y + h * 0.58, w * 0.09, h * 0.04, rgb(84, 90, 98)); // gun turret
+  strokeLine(x + w * 0.45, y + h * 0.6, x + w * 0.52, y + h * 0.6, 1.6, rgb(84, 90, 98)); // barrel
+  fillRect(x + w * 0.42, y + h * 0.52, w * 0.14, h * 0.1, rgb(84, 90, 98)); // bridge
+  fillRect(x + w * 0.44, y + h * 0.54, w * 0.02, h * 0.03, rgb(255, 220, 130)); // lit bridge windows
+  fillRect(x + w * 0.48, y + h * 0.54, w * 0.02, h * 0.03, rgb(255, 220, 130));
   strokeLine(x + w * 0.48, y + h * 0.52, x + w * 0.48, y + h * 0.4, 2, rgb(84, 90, 98));
-  // Drone above.
-  fillCircle(x + w * 0.55, y + h * 0.22, h * 0.03, rgb(30, 30, 34));
-  strokeLine(x + w * 0.5, y + h * 0.2, x + w * 0.6, y + h * 0.2, 1.6, rgb(30, 30, 34));
-  strokeLine(x + w * 0.52, y + h * 0.26, x + w * 0.58, y + h * 0.26, 1.6, rgb(30, 30, 34));
-  // Explosion on deck.
-  flame(x + w * 0.55, y + h * 0.56, h * 0.1);
-  smoke(x + w * 0.55, y + h * 0.38, h * 0.09, rgb(60, 60, 66));
-  fillRect(x + w * 0.4, y + h * 0.74, w * 0.3, h * 0.04, rgb(255, 140, 40));
-  // Harbour lights, moon, wave lines, second smoke puff.
+  strokeLine(x + w * 0.44, y + h * 0.42, x + w * 0.52, y + h * 0.42, 1.4, rgb(84, 90, 98)); // radar bar
+  fillCircle(x + w * 0.48, y + h * 0.39, 1.2, rgb(255, 80, 60)); // radar light
+  fillPoly(
+    [
+      [x + w * 0.48, y + h * 0.4],
+      [x + w * 0.505, y + h * 0.415],
+      [x + w * 0.48, y + h * 0.43],
+    ],
+    rgb(176, 30, 36),
+  ); // pennant
+  fillRect(x + w * 0.82, y + h * 0.64, w * 0.025, h * 0.012, rgb(220, 220, 225)); // hull number plate
+  fillCircle(x + w * 0.9, y + h * 0.68, 1.2, rgb(40, 44, 52)); // anchor
+  // Quadcopter drone above.
+  quadcopter(x + w * 0.55, y + h * 0.22, h * 0.055);
+  // Explosion on deck: flame tongues + debris + layered smoke.
+  flameTongues(x + w * 0.55, y + h * 0.6, h * 0.11);
+  fillCircle(x + w * 0.55, y + h * 0.4, 1.4, rgb(255, 160, 60)); // debris
+  fillCircle(x + w * 0.6, y + h * 0.46, 1.2, rgb(255, 190, 80));
+  fillCircle(x + w * 0.5, y + h * 0.5, 1, rgb(255, 140, 40));
+  fillCircle(x + w * 0.55, y + h * 0.34, h * 0.08, rgb(60, 60, 66)); // smoke column
+  fillCircle(x + w * 0.6, y + h * 0.3, h * 0.06, rgb(60, 60, 66));
+  fillCircle(x + w * 0.51, y + h * 0.28, h * 0.055, rgb(80, 80, 86));
+  fillCircle(x + w * 0.55, y + h * 0.32, h * 0.04, rgb(52, 52, 56));
+  // Fire glow on the hull + water.
+  fillRect(x + w * 0.42, y + h * 0.62, w * 0.26, h * 0.02, rgb(230, 120, 40));
+  fillRect(x + w * 0.48, y + h * 0.74, w * 0.14, h * 0.02, rgb(255, 150, 50));
+  fillRect(x + w * 0.51, y + h * 0.78, w * 0.08, h * 0.018, rgb(230, 110, 35));
+  fillRect(x + w * 0.53, y + h * 0.82, w * 0.04, h * 0.016, rgb(200, 90, 30));
+  // Harbour lights, wave lines, second smoke puff.
   for (let i = 0; i < 6; i++) fillCircle(x + w * (0.04 + i * 0.05), y + h * 0.56, 1.2, rgb(255, 210, 110));
-  fillCircle(x + w * 0.88, y + h * 0.12, h * 0.05, rgb(235, 230, 210));
   strokeLine(x + w * 0.12, y + h * 0.8, x + w * 0.24, y + h * 0.8, 1.2, rgb(120, 160, 190));
   strokeLine(x + w * 0.7, y + h * 0.86, x + w * 0.84, y + h * 0.86, 1.2, rgb(120, 160, 190));
-  smoke(x + w * 0.68, y + h * 0.34, h * 0.07, rgb(70, 70, 76));
+  fillCircle(x + w * 0.68, y + h * 0.34, h * 0.07, rgb(70, 70, 76));
+  fillCircle(x + w * 0.72, y + h * 0.3, h * 0.05, rgb(90, 90, 96));
 }
 
 // Scene 10: Cikande factory fire — factory, big flames, smoke columns.
@@ -1489,26 +1748,67 @@ function sceneBitcoin(x: number, y: number, w: number, h: number): void {
   drawText('$61,271', x + w * 0.8, y + h * 0.92, pSize, F_SANS_B, rgb(140, 220, 160), 'r');
 }
 
-// Scene 12: Sudan drones — city skyline, drone, UN building with blue flag.
+// Scene 12: Sudan drones — dusty city, UN building, drone, explosion.
 function sceneSudan(x: number, y: number, w: number, h: number): void {
-  sky(x, y, w, h, rgb(220, 190, 140), rgb(245, 225, 180));
-  // Skyline.
-  fillRect(x + w * 0.04, y + h * 0.5, w * 0.14, h * 0.32, rgb(150, 125, 90));
-  fillRect(x + w * 0.22, y + h * 0.4, w * 0.16, h * 0.42, rgb(140, 115, 82));
-  fillRect(x + w * 0.42, y + h * 0.55, w * 0.18, h * 0.27, rgb(150, 125, 90));
-  fillRect(x + w * 0.64, y + h * 0.44, w * 0.14, h * 0.38, rgb(140, 115, 82));
-  fillRect(x + w * 0.82, y + h * 0.58, w * 0.14, h * 0.24, rgb(150, 125, 90));
-  // UN building (white, centre) with blue flag.
+  sky(x, y, w, h, rgb(235, 200, 140), rgb(208, 148, 92));
+  // Dust haze bands.
+  fillRect(x, y + h * 0.22, w, h * 0.05, rgb(240, 212, 160));
+  fillRect(x, y + h * 0.38, w, h * 0.04, rgb(232, 198, 145));
+  // Far skyline in haze.
+  fillRect(x + w * 0.08, y + h * 0.46, w * 0.12, h * 0.36, rgb(182, 156, 116));
+  fillRect(x + w * 0.5, y + h * 0.42, w * 0.14, h * 0.4, rgb(182, 156, 116));
+  fillRect(x + w * 0.74, y + h * 0.48, w * 0.12, h * 0.34, rgb(182, 156, 116));
+  // Near skyline with dark windows.
+  fillRect(x + w * 0.04, y + h * 0.5, w * 0.14, h * 0.32, rgb(140, 112, 78));
+  fillRect(x + w * 0.22, y + h * 0.4, w * 0.16, h * 0.42, rgb(140, 112, 78));
+  fillRect(x + w * 0.42, y + h * 0.55, w * 0.18, h * 0.27, rgb(140, 112, 78));
+  fillRect(x + w * 0.64, y + h * 0.44, w * 0.14, h * 0.38, rgb(140, 112, 78));
+  fillRect(x + w * 0.82, y + h * 0.58, w * 0.14, h * 0.24, rgb(140, 112, 78));
+  for (let i = 0; i < 6; i++) fillRect(x + w * (0.07 + ((i * 29) % 80) / 100), y + h * (0.5 + ((i * 17) % 18) / 100), w * 0.018, h * 0.035, rgb(90, 70, 48));
+  // Minaret silhouette.
+  fillRect(x + w * 0.92, y + h * 0.3, w * 0.03, h * 0.52, rgb(140, 112, 78));
+  fillPoly(
+    [
+      [x + w * 0.915, y + h * 0.3],
+      [x + w * 0.935, y + h * 0.18],
+      [x + w * 0.955, y + h * 0.3],
+    ],
+    rgb(140, 112, 78),
+  );
+  // UN building (white, centre) with blue flag + shaded side.
   fillRect(x + w * 0.3, y + h * 0.58, w * 0.4, h * 0.24, rgb(240, 238, 230));
-  for (let i = 0; i < 5; i++) fillRect(x + w * (0.33 + i * 0.07), y + h * 0.62, w * 0.04, h * 0.12, rgb(90, 110, 150));
+  fillRect(x + w * 0.64, y + h * 0.58, w * 0.06, h * 0.24, rgb(210, 206, 196));
+  for (let r = 0; r < 2; r++)
+    for (let i = 0; i < 5; i++) fillRect(x + w * (0.33 + i * 0.07), y + h * (0.62 + r * 0.07), w * 0.04, h * 0.05, rgb(90, 110, 150));
+  fillCircle(x + w * 0.5, y + h * 0.66, 1.4, rgb(40, 90, 180)); // emblem dot
   flagPole(x + w * 0.5, y + h * 0.58, h * 0.16, rgb(40, 90, 180));
-  // Drone and explosion.
-  fillCircle(x + w * 0.78, y + h * 0.2, h * 0.035, rgb(40, 40, 44));
-  strokeLine(x + w * 0.72, y + h * 0.18, x + w * 0.84, y + h * 0.18, 1.6, rgb(40, 40, 44));
-  flame(x + w * 0.62, y + h * 0.52, h * 0.09);
-  smoke(x + w * 0.62, y + h * 0.36, h * 0.08, rgb(90, 80, 70));
+  // Drone with motion trail.
+  strokeLine(x + w * 0.62, y + h * 0.18, x + w * 0.72, y + h * 0.19, 1, rgb(120, 100, 70));
+  strokeLine(x + w * 0.64, y + h * 0.22, x + w * 0.72, y + h * 0.225, 1, rgb(120, 100, 70));
+  quadcopter(x + w * 0.78, y + h * 0.2, h * 0.06);
+  // Explosion: flame tongues + smoke + dust cloud + debris.
+  flameTongues(x + w * 0.62, y + h * 0.56, h * 0.11);
+  fillCircle(x + w * 0.62, y + h * 0.36, h * 0.08, rgb(90, 80, 70));
+  fillCircle(x + w * 0.67, y + h * 0.31, h * 0.06, rgb(90, 80, 70));
+  fillCircle(x + w * 0.58, y + h * 0.3, h * 0.05, rgb(110, 98, 84));
+  fillCircle(x + w * 0.62, y + h * 0.6, h * 0.07, rgb(215, 190, 150)); // dust at the base
+  fillCircle(x + w * 0.68, y + h * 0.62, h * 0.05, rgb(215, 190, 150));
+  fillCircle(x + w * 0.56, y + h * 0.62, h * 0.045, rgb(205, 180, 140));
+  fillCircle(x + w * 0.66, y + h * 0.42, 1.2, rgb(255, 160, 60)); // debris
+  fillCircle(x + w * 0.58, y + h * 0.46, 1, rgb(255, 190, 80));
+  // Ground: dusty street, rubble, palm silhouette.
   fillRect(x, y + h * 0.82, w, h * 0.18, rgb(120, 100, 70));
-  // Harsh sun + dust haze + second flag on a side building.
+  fillRect(x + w * 0.1, y + h * 0.86, w * 0.08, h * 0.04, rgb(90, 74, 52));
+  fillRect(x + w * 0.24, y + h * 0.9, w * 0.06, h * 0.03, rgb(90, 74, 52));
+  fillRect(x + w * 0.78, y + h * 0.88, w * 0.07, h * 0.035, rgb(90, 74, 52));
+  strokeLine(x + w * 0.08, y + h * 0.82, x + w * 0.08, y + h * 0.6, 1.6, rgb(90, 70, 48)); // palm trunk
+  strokeLine(x + w * 0.08, y + h * 0.6, x + w * 0.045, y + h * 0.54, 1.4, rgb(90, 70, 48));
+  strokeLine(x + w * 0.08, y + h * 0.6, x + w * 0.115, y + h * 0.54, 1.4, rgb(90, 70, 48));
+  strokeLine(x + w * 0.08, y + h * 0.6, x + w * 0.08, y + h * 0.52, 1.4, rgb(90, 70, 48));
+  strokeLine(x + w * 0.08, y + h * 0.6, x + w * 0.055, y + h * 0.56, 1.4, rgb(90, 70, 48));
+  strokeLine(x + w * 0.08, y + h * 0.6, x + w * 0.105, y + h * 0.56, 1.4, rgb(90, 70, 48));
+  // Harsh sun with halo + dust haze + second flag on a side building.
+  fillCircle(x + w * 0.88, y + h * 0.12, h * 0.09, rgb(250, 215, 140));
   fillCircle(x + w * 0.88, y + h * 0.12, h * 0.07, rgb(255, 225, 150));
   fillCircle(x + w * 0.3, y + h * 0.7, h * 0.09, rgb(225, 200, 155));
   fillCircle(x + w * 0.82, y + h * 0.74, h * 0.07, rgb(225, 200, 155));
