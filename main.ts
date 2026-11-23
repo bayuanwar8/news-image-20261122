@@ -998,21 +998,100 @@ function sceneHormuz(x: number, y: number, w: number, h: number): void {
     ],
     rgb(120, 90, 70),
   );
-  // Tanker 1 (left, burning).
-  fillRect(x + w * 0.08, y + h * 0.6, w * 0.34, h * 0.12, rgb(60, 60, 66));
-  fillRect(x + w * 0.08, y + h * 0.52, w * 0.1, h * 0.09, rgb(90, 90, 96));
-  flame(x + w * 0.24, y + h * 0.5, h * 0.11);
-  smoke(x + w * 0.26, y + h * 0.3, h * 0.1, rgb(70, 70, 74));
-  // Tanker 2 (right, burning).
-  fillRect(x + w * 0.56, y + h * 0.66, w * 0.36, h * 0.11, rgb(52, 52, 58));
-  fillRect(x + w * 0.78, y + h * 0.58, w * 0.09, h * 0.09, rgb(84, 84, 90));
-  flame(x + w * 0.68, y + h * 0.57, h * 0.09);
-  smoke(x + w * 0.7, y + h * 0.4, h * 0.09, rgb(70, 70, 74));
-  // Fire glow on the water.
-  fillRect(x + w * 0.14, y + h * 0.73, w * 0.2, h * 0.05, rgb(255, 140, 40));
-  fillRect(x + w * 0.62, y + h * 0.78, w * 0.18, h * 0.05, rgb(255, 140, 40));
-  // Sun reflection column on the water.
+  // Sun reflection column on the water (before the ships, so hulls occlude it).
   for (let i = 0; i < 5; i++) fillRect(x + w * (0.76 + ((i * 7) % 3) * 0.01), y + h * (0.58 + i * 0.07), w * 0.07, h * 0.025, rgb(250, 200, 120));
+  // Tanker 1 (left, bow to the right, burning): hull with raked bow + flat stern,
+  // red boot-top stripe, white superstructure + funnel near the stern, mast,
+  // deck tanks, fire and smoke rising from a breach on deck.
+  fillPoly(
+    [
+      [x + w * 0.07, y + h * 0.6],
+      [x + w * 0.385, y + h * 0.6],
+      [x + w * 0.44, y + h * 0.72],
+      [x + w * 0.07, y + h * 0.72],
+    ],
+    rgb(52, 52, 58),
+  );
+  fillPoly(
+    [
+      [x + w * 0.07, y + h * 0.68],
+      [x + w * 0.415, y + h * 0.68],
+      [x + w * 0.44, y + h * 0.72],
+      [x + w * 0.07, y + h * 0.72],
+    ],
+    rgb(140, 40, 34),
+  );
+  fillRect(x + w * 0.07, y + h * 0.585, w * 0.315, h * 0.015, rgb(180, 180, 186)); // deck edge
+  fillRect(x + w * 0.085, y + h * 0.5, w * 0.075, h * 0.1, rgb(235, 232, 224)); // superstructure
+  fillRect(x + w * 0.095, y + h * 0.525, w * 0.012, h * 0.02, rgb(40, 44, 52));
+  fillRect(x + w * 0.115, y + h * 0.525, w * 0.012, h * 0.02, rgb(40, 44, 52));
+  fillRect(x + w * 0.135, y + h * 0.525, w * 0.012, h * 0.02, rgb(40, 44, 52));
+  fillRect(x + w * 0.095, y + h * 0.555, w * 0.012, h * 0.02, rgb(40, 44, 52));
+  fillRect(x + w * 0.115, y + h * 0.555, w * 0.012, h * 0.02, rgb(40, 44, 52));
+  fillRect(x + w * 0.135, y + h * 0.555, w * 0.012, h * 0.02, rgb(40, 44, 52));
+  fillRect(x + w * 0.165, y + h * 0.455, w * 0.035, h * 0.145, rgb(70, 70, 76)); // funnel
+  fillRect(x + w * 0.165, y + h * 0.455, w * 0.035, h * 0.03, rgb(30, 30, 34)); // funnel top
+  strokeLine(x + w * 0.36, y + h * 0.6, x + w * 0.36, y + h * 0.47, 1.6, rgb(40, 40, 44)); // mast
+  strokeLine(x + w * 0.345, y + h * 0.48, x + w * 0.375, y + h * 0.48, 1.6, rgb(40, 40, 44));
+  fillCircle(x + w * 0.205, y + h * 0.585, h * 0.018, rgb(150, 150, 156)); // deck tanks
+  fillCircle(x + w * 0.3, y + h * 0.585, h * 0.018, rgb(150, 150, 156));
+  fillCircle(x + w * 0.335, y + h * 0.585, h * 0.018, rgb(150, 150, 156));
+  flame(x + w * 0.245, y + h * 0.575, h * 0.085);
+  smoke(x + w * 0.26, y + h * 0.38, h * 0.085, rgb(70, 70, 74));
+  fillPoly(
+    [
+      [x + w * 0.43, y + h * 0.7],
+      [x + w * 0.47, y + h * 0.72],
+      [x + w * 0.43, y + h * 0.735],
+    ],
+    rgb(220, 230, 235),
+  ); // bow wave
+  fillRect(x + w * 0.12, y + h * 0.74, w * 0.22, h * 0.045, rgb(255, 140, 40)); // fire glow
+  // Tanker 2 (right, bow to the left, burning): mirror of tanker 1, slightly lower.
+  fillPoly(
+    [
+      [x + w * 0.93, y + h * 0.64],
+      [x + w * 0.615, y + h * 0.64],
+      [x + w * 0.56, y + h * 0.76],
+      [x + w * 0.93, y + h * 0.76],
+    ],
+    rgb(46, 46, 52),
+  );
+  fillPoly(
+    [
+      [x + w * 0.93, y + h * 0.72],
+      [x + w * 0.585, y + h * 0.72],
+      [x + w * 0.56, y + h * 0.76],
+      [x + w * 0.93, y + h * 0.76],
+    ],
+    rgb(140, 40, 34),
+  );
+  fillRect(x + w * 0.6, y + h * 0.625, w * 0.33, h * 0.015, rgb(180, 180, 186)); // deck edge
+  fillRect(x + w * 0.845, y + h * 0.54, w * 0.075, h * 0.1, rgb(235, 232, 224)); // superstructure
+  fillRect(x + w * 0.855, y + h * 0.565, w * 0.012, h * 0.02, rgb(40, 44, 52));
+  fillRect(x + w * 0.875, y + h * 0.565, w * 0.012, h * 0.02, rgb(40, 44, 52));
+  fillRect(x + w * 0.895, y + h * 0.565, w * 0.012, h * 0.02, rgb(40, 44, 52));
+  fillRect(x + w * 0.855, y + h * 0.595, w * 0.012, h * 0.02, rgb(40, 44, 52));
+  fillRect(x + w * 0.875, y + h * 0.595, w * 0.012, h * 0.02, rgb(40, 44, 52));
+  fillRect(x + w * 0.895, y + h * 0.595, w * 0.012, h * 0.02, rgb(40, 44, 52));
+  fillRect(x + w * 0.805, y + h * 0.495, w * 0.035, h * 0.145, rgb(70, 70, 76)); // funnel
+  fillRect(x + w * 0.805, y + h * 0.495, w * 0.035, h * 0.03, rgb(30, 30, 34)); // funnel top
+  strokeLine(x + w * 0.635, y + h * 0.64, x + w * 0.635, y + h * 0.51, 1.6, rgb(40, 40, 44)); // mast
+  strokeLine(x + w * 0.62, y + h * 0.52, x + w * 0.65, y + h * 0.52, 1.6, rgb(40, 40, 44));
+  fillCircle(x + w * 0.66, y + h * 0.625, h * 0.018, rgb(150, 150, 156)); // deck tanks
+  fillCircle(x + w * 0.755, y + h * 0.625, h * 0.018, rgb(150, 150, 156));
+  fillCircle(x + w * 0.79, y + h * 0.625, h * 0.018, rgb(150, 150, 156));
+  flame(x + w * 0.705, y + h * 0.615, h * 0.08);
+  smoke(x + w * 0.72, y + h * 0.43, h * 0.08, rgb(70, 70, 74));
+  fillPoly(
+    [
+      [x + w * 0.57, y + h * 0.745],
+      [x + w * 0.53, y + h * 0.76],
+      [x + w * 0.57, y + h * 0.775],
+    ],
+    rgb(220, 230, 235),
+  ); // bow wave
+  fillRect(x + w * 0.6, y + h * 0.78, w * 0.2, h * 0.045, rgb(255, 140, 40)); // fire glow
   // Wave lines.
   strokeLine(x + w * 0.3, y + h * 0.8, x + w * 0.42, y + h * 0.8, 1.2, rgb(150, 190, 210));
   strokeLine(x + w * 0.48, y + h * 0.86, x + w * 0.58, y + h * 0.86, 1.2, rgb(150, 190, 210));
